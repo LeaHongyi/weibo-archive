@@ -29,6 +29,11 @@
         "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       line-height: 1.65;
     }
+    body.lightbox-locked {
+      position: fixed;
+      width: 100%;
+      overflow: hidden;
+    }
     a { color: inherit; }
     .site-header {
       position: sticky; top: 0; z-index: 12;
@@ -406,6 +411,8 @@
       position: fixed; inset: 0; z-index: 20; display: none; place-items: center;
       padding: 28px 28px 94px; background: rgba(14, 14, 17, .86);
       backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+      overscroll-behavior: contain;
+      touch-action: none;
     }
     .lightbox.open { display: grid; }
     .lightbox img { max-width: 95vw; max-height: calc(100vh - 128px); object-fit: contain; border-radius: 12px; }
@@ -109740,6 +109747,7 @@ Fun night 上海·浦东嘉里中心"
       sectionTouchStartY = event.changedTouches[0].clientY;
     }, { passive: true });
     window.addEventListener("touchmove", (event) => {
+      if (lightbox.classList.contains("open")) return;
       const deltaY = sectionTouchStartY - event.changedTouches[0].clientY;
       if (Math.abs(deltaY) < 42) return;
       if (handleSectionSnap(deltaY)) {
@@ -109766,6 +109774,7 @@ Fun night 上海·浦东嘉里中心"
     let currentGallery = 0;
     let currentImage = 0;
     let touchStartX = 0;
+    let lightboxScrollY = 0;
     const loadPhoto = (button) => {
       const image = button.querySelector("img");
       if (!image.getAttribute("src")) {
@@ -109910,9 +109919,19 @@ Fun night 上海·浦东嘉里中心"
       showLightboxImage();
     };
     const closeLightbox = () => {
+      if (!lightbox.classList.contains("open")) return;
       lightbox.classList.remove("open");
       lightboxImage.removeAttribute("src");
       activeLightboxButtons = null;
+      document.body.classList.remove("lightbox-locked");
+      document.body.style.top = "";
+      window.scrollTo(0, lightboxScrollY);
+    };
+    const openLightbox = () => {
+      lightboxScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      document.body.style.top = `-${lightboxScrollY}px`;
+      document.body.classList.add("lightbox-locked");
+      lightbox.classList.add("open");
     };
     document.querySelectorAll(".photo-open").forEach((button) => {
       button.addEventListener("click", () => {
@@ -109920,7 +109939,7 @@ Fun night 上海·浦东嘉里中心"
         currentGallery = Number(button.dataset.post);
         currentImage = Number(button.dataset.image);
         showLightboxImage();
-        lightbox.classList.add("open");
+        openLightbox();
       });
     });
     let visibleAlbumButtons = albumButtons;
@@ -109932,7 +109951,7 @@ Fun night 上海·浦东嘉里中心"
         activeLightboxButtons = visibleAlbumButtons;
         currentImage = Math.max(0, activeLightboxButtons.indexOf(button));
         showLightboxImage();
-        lightbox.classList.add("open");
+        openLightbox();
       });
     });
     document.querySelectorAll(".date-month-jump").forEach((button) => {
@@ -110075,6 +110094,9 @@ Fun night 上海·浦东嘉里中心"
       const delta = event.changedTouches[0].clientX - touchStartX;
       if (Math.abs(delta) > 45) moveLightbox(delta < 0 ? 1 : -1);
     }, { passive: true });
+    lightbox.addEventListener("touchmove", (event) => {
+      event.preventDefault();
+    }, { passive: false });
     lightbox.addEventListener("click", (event) => {
       if (event.target === lightbox) closeLightbox();
     });
