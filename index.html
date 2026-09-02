@@ -384,6 +384,77 @@
     }
     .post-header time { margin-left: auto; text-align: right; }
     .post-text { padding: 8px 20px 20px; font-size: clamp(17px, 1.75vw, 21px); }
+    .post-preview {
+      border: 1px solid rgba(47,48,44,.09);
+      background: rgba(255,255,255,.88);
+    }
+    .post-preview .post-text {
+      padding: 22px 22px 18px;
+      font-size: clamp(18px, 1.65vw, 22px);
+      line-height: 1.55;
+    }
+    .post-preview .photo-grid {
+      padding: 0;
+      background: transparent;
+    }
+    .post-preview-footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 15px 20px 18px;
+      color: var(--muted);
+      background: transparent;
+    }
+    .post-preview-left {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+    .post-preview-stats {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 18px;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .post-preview-stats span,
+    .post-preview-stats .stat-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+    }
+    .post-preview-stats b {
+      color: var(--accent);
+      font-size: 23px;
+      font-weight: 560;
+      line-height: 1;
+    }
+    .post-preview time {
+      color: rgba(47,48,44,.45);
+      font-size: 12px;
+      letter-spacing: .02em;
+    }
+    .post-preview-number {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--accent);
+      font-size: 12px;
+      font-weight: 760;
+      box-shadow: 0 10px 24px rgba(180,142,110,.18);
+    }
     .photo-grid {
       display: grid; gap: 3px; padding: 3px; background: rgba(212,198,165,.12);
     }
@@ -8441,11 +8512,7 @@
     </nav>
     <section class="posts" aria-label="微博内容">
       
-      <article class="post" id="post-1" data-categories="">
-        <header class="post-header">
-          <span class="post-number">1</span>
-          <time datetime="2022-02-09T23:45:47">2022-02-09 23:45:47</time>
-        </header>
+      <article class="post post-preview" id="post-1" data-categories="">
         <div class="post-text">早饭</div>
         <div class="photo-grid grid-three">
           
@@ -8495,11 +8562,17 @@
             </button>
           </figure>
         </div>
-        <footer class="post-stats" aria-label="微博互动数据">
-          <span><b>♡</b> 点赞 1</span>
-          <button class="stat-button comments-toggle" type="button" aria-expanded="false"
-            aria-controls="comments-1"><b>○</b> 评论 2</button>
-          <span><b>↗</b> 转发 1</span>
+        <footer class="post-preview-footer" aria-label="微博互动数据">
+          <div class="post-preview-left">
+            <div class="post-preview-stats">
+              <span><b>♡</b>1</span>
+              <button class="stat-button comments-toggle" type="button" aria-expanded="false"
+                aria-controls="comments-1"><b>○</b>2</button>
+              <span><b>↗</b>1</span>
+            </div>
+            <time datetime="2022-02-09T23:45:47">2022-02-09 23:45:47</time>
+          </div>
+          <span class="post-preview-number">1</span>
         </footer>
         <section class="comments-panel" id="comments-1" hidden>
           <h3>评论</h3>
