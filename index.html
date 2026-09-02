@@ -292,15 +292,17 @@
     .album-open {
       display: block;
       width: 100%;
+      aspect-ratio: 1 / 1;
       padding: 0;
       border: 0;
+      overflow: hidden;
       background: rgba(212,198,165,.14);
       cursor: zoom-in;
     }
     .album-open img {
       display: block;
       width: 100%;
-      aspect-ratio: 1 / 1;
+      height: 100%;
       object-fit: cover;
       background: rgba(212,198,165,.16);
       transition: opacity .22s ease, filter .22s ease;
@@ -578,7 +580,14 @@
       .collection-small { grid-column: span 1; }
       .collection-label { font-size: 18px; }
       .hero-inner, .layout { width: min(100% - 14px, 1180px); }
-      .album-view { width: min(100% - 14px, 1180px); padding-top: 12px; }
+      .album-view {
+        width: calc(100vw - 28px);
+        max-width: none;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 12px;
+        overflow: hidden;
+      }
       .album-year { gap: 18px; }
       .album-year + .album-year { margin-top: 24px; }
       .album-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; }
