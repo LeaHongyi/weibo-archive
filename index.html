@@ -265,7 +265,11 @@
     }
     .album-year { display: grid; gap: 26px; }
     .album-year + .album-year { margin-top: 34px; }
-    .album-month { display: grid; gap: 10px; }
+    .album-month {
+      display: grid; gap: 10px;
+      content-visibility: auto;
+      contain-intrinsic-size: 760px;
+    }
     .album-divider {
       display: flex; align-items: baseline; gap: 10px;
       margin: 0; padding: 8px 0 2px;
@@ -387,6 +391,8 @@
       position: relative;
       border: 1px solid rgba(47,48,44,.09);
       background: rgba(255,255,255,.88);
+      content-visibility: auto;
+      contain-intrinsic-size: 820px;
     }
     .post-preview .post-text {
       padding: 22px 22px 18px;
@@ -84401,6 +84407,8 @@ Fun night 上海·浦东嘉里中心"
     let lightboxDragY = 0;
     let lightboxDragging = false;
     let lightboxScrollY = 0;
+    const isNarrowScreen = () => window.matchMedia("(max-width: 820px)").matches;
+    const loadedButtons = new Set();
     const loadPhoto = (button) => {
       const image = button.querySelector("img");
       if (!image.getAttribute("src")) {
@@ -84410,6 +84418,7 @@ Fun night 上海·浦东嘉里中心"
         image.src = button.dataset.src;
       }
       pendingButtons.delete(button);
+      loadedButtons.add(button);
       return image;
     };
     const lazyButtons = [...document.querySelectorAll(".photo-open, .album-open")];
@@ -84418,9 +84427,10 @@ Fun night 上海·浦东嘉里中心"
     let photoObserver = null;
     const loadVisiblePhotos = () => {
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const preload = window.matchMedia("(max-width: 820px)").matches ? 1100 : 620;
+      const preload = isNarrowScreen() ? 760 : 620;
       let loadedThisFrame = 0;
-      const loadLimit = window.matchMedia("(max-width: 820px)").matches ? 18 : 32;
+      const loadLimit = isNarrowScreen() ? 10 : 28;
+      unloadDistantPhotos(viewportHeight, preload);
       pendingButtons.forEach((button) => {
         if (loadedThisFrame >= loadLimit) return;
         if (button.closest("[hidden]")) return;
@@ -84436,6 +84446,27 @@ Fun night 上海·浦东嘉里中心"
         }
       });
       if (pendingButtons.size && loadedThisFrame >= loadLimit) requestVisiblePhotoLoad();
+    };
+    const unloadDistantPhotos = (viewportHeight, preload) => {
+      const unloadDistance = isNarrowScreen() ? 2200 : 3200;
+      loadedButtons.forEach((button) => {
+        if (lightbox.classList.contains("open") && activeLightboxButtons?.includes(button)) return;
+        const image = button.querySelector("img");
+        if (!image?.getAttribute("src")) {
+          loadedButtons.delete(button);
+          pendingButtons.add(button);
+          return;
+        }
+        const rect = button.getBoundingClientRect();
+        const tooFar = rect.bottom < -unloadDistance || rect.top > viewportHeight + unloadDistance;
+        const hidden = button.closest("[hidden]") || button.closest(".post")?.hidden || button.closest(".album-item")?.hidden;
+        if (!tooFar && !hidden) return;
+        image.removeAttribute("src");
+        image.removeAttribute("srcset");
+        loadedButtons.delete(button);
+        pendingButtons.add(button);
+        if (photoObserver) photoObserver.observe(button);
+      });
     };
     const requestVisiblePhotoLoad = () => {
       if (photoLoadTicking) return;
@@ -84622,12 +84653,12 @@ Fun night 上海·浦东嘉里中心"
           loaded += 1;
         });
         if (loaded >= loadLimit) requestVisiblePhotoLoad();
-      }, { rootMargin: (window.matchMedia("(max-width: 820px)").matches ? "1100px 0px" : "620px 0px") });
+      }, { rootMargin: (isNarrowScreen() ? "760px 0px" : "620px 0px") });
       lazyButtons.forEach((button) => photoObserver.observe(button));
     } else {
       lazyButtons.slice(0, 80).forEach(loadPhoto);
-      window.addEventListener("scroll", requestVisiblePhotoLoad, { passive: true });
     }
+    window.addEventListener("scroll", requestVisiblePhotoLoad, { passive: true });
     if (!usesIntersectionObserver) loadVisiblePhotos();
     const showLightboxImage = () => {
       const buttons = activeLightboxButtons || galleries[currentGallery];
