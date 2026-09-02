@@ -545,7 +545,12 @@
       touch-action: none;
     }
     .lightbox.open { display: grid; }
-    .lightbox img { max-width: 95vw; max-height: calc(100vh - 128px); object-fit: contain; border-radius: 12px; }
+    .lightbox img {
+      max-width: 95vw; max-height: calc(100vh - 128px); object-fit: contain; border-radius: 12px;
+      transition: transform .22s ease;
+      will-change: transform;
+    }
+    .lightbox.dragging img { transition: none; }
     .lightbox-caption {
       position: fixed;
       left: 50%;
@@ -669,6 +674,81 @@
       .archive-actions { gap: 0; justify-self: end; }
       .button { min-height: 34px; font-size: 11px; letter-spacing: .10em; white-space: nowrap; }
       .archive-actions .button { min-width: 44px; padding: 0 6px; font-size: 10px; letter-spacing: .08em; }
+      .lightbox {
+        padding: 20px 12px 72px;
+        background: rgba(14,14,17,.88);
+      }
+      .lightbox img {
+        max-width: 96vw;
+        max-height: calc(100vh - 116px);
+        border-radius: 8px;
+      }
+      .lightbox-close {
+        top: 12px;
+        right: 12px;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        font-size: 20px;
+        background: rgba(0,0,0,.24);
+      }
+      .lightbox-nav {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        font-size: 22px;
+        background: rgba(255,255,255,.10);
+      }
+      .lightbox-prev { left: 8px; }
+      .lightbox-next { right: 8px; }
+      .lightbox-caption {
+        bottom: 64px;
+        width: calc(100vw - 28px);
+        padding: 9px 11px;
+        border-radius: 8px;
+      }
+      .lightbox-caption time { font-size: 10px; }
+      .lightbox-caption p { font-size: 11px; -webkit-line-clamp: 2; }
+      .lightbox-toolbar {
+        inset: auto 0 14px 0;
+        transform: none;
+        display: block;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+      .lightbox-index {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        font-size: 12px;
+        font-weight: 700;
+        color: rgba(255,255,255,.86);
+        letter-spacing: .02em;
+      }
+      .lightbox-download {
+        position: fixed;
+        right: 14px;
+        bottom: 12px;
+        width: 34px;
+        min-height: 34px;
+        padding: 0;
+        border-radius: 999px;
+        font-size: 0;
+        color: #111;
+        background: rgba(247,243,229,.90);
+      }
+      .lightbox-download::before {
+        content: "↓";
+        font-size: 18px;
+        line-height: 1;
+        font-weight: 780;
+      }
       .collections { width: min(100% - 18px, 1180px); padding: 48px 0 34px; }
       .collections h2 { margin-bottom: 24px; font-size: 26px; }
       .collection-grid {
@@ -80158,6 +80238,9 @@ Fun night 上海·浦东嘉里中心"
     let currentGallery = 0;
     let currentImage = 0;
     let touchStartX = 0;
+    let touchStartY = 0;
+    let lightboxDragY = 0;
+    let lightboxDragging = false;
     let lightboxScrollY = 0;
     const loadPhoto = (button) => {
       const image = button.querySelector("img");
@@ -80395,6 +80478,8 @@ Fun night 上海·浦东嘉里中心"
       lightboxImage.onerror = () => {
         if (lightboxImage.src !== image.src && image.src) lightboxImage.src = image.src;
       };
+      lightboxImage.style.transform = "";
+      lightbox.classList.remove("dragging");
       lightboxImage.src = fullSource;
       lightboxIndex.textContent = (currentImage + 1) + "/" + buttons.length;
       lightboxDownload.href = fullSource;
@@ -80416,6 +80501,8 @@ Fun night 上海·浦东嘉里中心"
       if (!lightbox.classList.contains("open")) return;
       const restoreY = lightboxScrollY;
       lightbox.classList.remove("open");
+      lightbox.classList.remove("dragging");
+      lightboxImage.style.transform = "";
       lightboxImage.removeAttribute("src");
       activeLightboxButtons = null;
       const previousScrollBehavior = document.documentElement.style.scrollBehavior;
@@ -80436,6 +80523,9 @@ Fun night 上海·浦东嘉里中心"
       );
       document.body.style.top = "-" + lightboxScrollY + "px";
       document.body.classList.add("lightbox-locked");
+      lightboxDragY = 0;
+      lightboxDragging = false;
+      lightboxImage.style.transform = "";
       lightbox.classList.add("open");
     };
     document.querySelectorAll(".photo-open").forEach((button) => {
@@ -80596,9 +80686,36 @@ Fun night 上海·浦东嘉里中心"
     lightboxNext.addEventListener("click", () => moveLightbox(1));
     lightboxImage.addEventListener("touchstart", (event) => {
       touchStartX = event.changedTouches[0].clientX;
+      touchStartY = event.changedTouches[0].clientY;
+      lightboxDragY = 0;
+      lightboxDragging = false;
     }, { passive: true });
+    lightboxImage.addEventListener("touchmove", (event) => {
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+      if (deltaY <= 0 || Math.abs(deltaY) < Math.abs(deltaX) * 1.15) return;
+      event.preventDefault();
+      lightboxDragging = true;
+      lightboxDragY = Math.min(deltaY, 220);
+      const scale = Math.max(.78, 1 - lightboxDragY / 620);
+      lightbox.classList.add("dragging");
+      lightboxImage.style.transform = "translateY(" + lightboxDragY + "px) scale(" + scale + ")";
+    }, { passive: false });
     lightboxImage.addEventListener("touchend", (event) => {
       const delta = event.changedTouches[0].clientX - touchStartX;
+      if (lightboxDragging) {
+        const shouldClose = lightboxDragY > 92;
+        lightboxDragging = false;
+        lightboxDragY = 0;
+        lightbox.classList.remove("dragging");
+        if (shouldClose) {
+          closeLightbox();
+        } else {
+          lightboxImage.style.transform = "";
+        }
+        return;
+      }
       if (Math.abs(delta) > 45) moveLightbox(delta < 0 ? 1 : -1);
     }, { passive: true });
     lightbox.addEventListener("touchmove", (event) => {
