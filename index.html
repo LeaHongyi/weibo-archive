@@ -8852,9 +8852,14 @@
     let photoObserver = null;
     const loadVisiblePhotos = () => {
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const preload = isNarrowScreen() ? 760 : 620;
+      const inAlbumView = archiveView === "album";
+      const preload = isNarrowScreen()
+        ? (inAlbumView ? 1800 : 760)
+        : (inAlbumView ? 1400 : 620);
       let loadedThisFrame = 0;
-      const loadLimit = isNarrowScreen() ? 10 : 28;
+      const loadLimit = isNarrowScreen()
+        ? (inAlbumView ? 48 : 10)
+        : (inAlbumView ? 72 : 28);
       unloadDistantPhotos(viewportHeight, preload);
       pendingButtons.forEach((button) => {
         if (loadedThisFrame >= loadLimit) return;
@@ -8873,7 +8878,10 @@
       if (pendingButtons.size && loadedThisFrame >= loadLimit) requestVisiblePhotoLoad();
     };
     const unloadDistantPhotos = (viewportHeight, preload) => {
-      const unloadDistance = isNarrowScreen() ? 2200 : 3200;
+      const inAlbumView = archiveView === "album";
+      const unloadDistance = isNarrowScreen()
+        ? (inAlbumView ? 5200 : 2200)
+        : (inAlbumView ? 6800 : 3200);
       loadedButtons.forEach((button) => {
         if (lightbox.classList.contains("open") && activeLightboxButtons?.includes(button)) return;
         const image = button.querySelector("img");
@@ -8967,6 +8975,11 @@
     const refreshVisibleAlbumButtons = () => {
       visibleAlbumButtons = albumButtons.filter((item) => !item.closest(".album-item")?.hidden);
     };
+    const requestAlbumPhotoLoad = () => {
+      requestVisiblePhotoLoad();
+      window.setTimeout(requestVisiblePhotoLoad, 120);
+      window.setTimeout(requestVisiblePhotoLoad, 420);
+    };
     const applyAlbumFilter = () => {
       if (!albumBuilt) return;
       albumItems.forEach((item) => {
@@ -8979,6 +8992,7 @@
         year.hidden = ![...year.querySelectorAll(".album-month")].some((month) => !month.hidden);
       });
       refreshVisibleAlbumButtons();
+      if (archiveView === "album") requestAlbumPhotoLoad();
     };
     const bindAlbumButton = (button) => {
       button.addEventListener("click", () => {
@@ -9068,7 +9082,8 @@
         if (target) snapToElement(target, "#archive-content");
       }
       requestAnimationFrame(() => {
-        requestVisiblePhotoLoad();
+        if (isAlbum) requestAlbumPhotoLoad();
+        else requestVisiblePhotoLoad();
         if (typeof updateBackToTop === "function") updateBackToTop();
       });
     };
