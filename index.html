@@ -311,7 +311,7 @@
     .timeline {
       position: sticky; top: calc(var(--nav-height) + 86px);
       overflow-y: auto; max-height: calc(100vh - var(--nav-height) - 104px);
-      border: 1px solid var(--line); border-radius: 2px;
+      border: 1px solid rgba(47,48,44,.08); border-radius: 2px;
       background: var(--panel); box-shadow: var(--shadow);
       backdrop-filter: var(--glass); -webkit-backdrop-filter: var(--glass);
       scrollbar-width: thin; scrollbar-color: var(--green) transparent;
@@ -331,8 +331,8 @@
     .date-year > summary::-webkit-details-marker { display: none; }
     .date-year > summary {
       display: flex; align-items: baseline;
-      padding: 11px 16px 8px; color: var(--ink); background: rgba(251,250,247,.74);
-      font-size: 18px; font-weight: 780;
+      padding: 10px 14px 6px; color: var(--ink); background: transparent;
+      font-size: 15px; font-weight: 760;
     }
     .date-year > summary::after {
       content: "⌄"; margin-left: auto; color: var(--muted); transition: transform .18s ease;
@@ -340,11 +340,15 @@
     .date-year:not([open]) > summary::after { transform: rotate(-90deg); }
     .date-year-unit, .date-month-unit { margin-left: 2px; font-size: .72em; font-weight: 650; }
     .date-month-jump {
-      display: flex; align-items: baseline; gap: 2px; margin: 2px 10px; padding: 7px 9px;
-      border-radius: 2px; color: var(--ink); background: transparent; border: 1px solid rgba(47,48,44,.10);
-      font-size: 14px; font-weight: 740; text-align: left; cursor: pointer; text-decoration: none;
+      display: flex; align-items: baseline; gap: 2px; margin: 1px 8px; padding: 5px 8px;
+      border-radius: 2px; color: var(--muted); background: transparent; border: 0;
+      font-size: 12px; font-weight: 700; text-align: left; cursor: pointer; text-decoration: none;
+      transition: background .16s ease, color .16s ease;
     }
-    .date-entries { padding: 1px 10px 7px 20px; }
+    .date-month-jump:hover, .date-month-jump.active {
+      color: var(--ink); background: rgba(180,142,110,.16);
+    }
+    .date-entries { padding: 1px 8px 7px 17px; }
     .date-entry {
       display: block; margin: 3px 0; padding: 7px 9px; border-left: 2px solid rgba(47,48,44,.14);
       color: var(--muted); text-decoration: none;
@@ -593,7 +597,7 @@
       .album-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; }
       .album-divider { padding-top: 6px; font-size: 11px; }
       .layout {
-        grid-template-columns: 64px minmax(0, 1fr); gap: 10px;
+        grid-template-columns: 50px minmax(0, 1fr); gap: 8px;
         padding-top: 18px;
       }
       .timeline {
@@ -601,19 +605,19 @@
         max-height: calc(100vh - var(--nav-height) - 76px); border-radius: 2px;
         overflow-x: hidden;
       }
-      .timeline-title { padding: 10px 5px 8px; text-align: center; font-size: 10px; letter-spacing: .14em; }
+      .timeline-title {
+        padding: 9px 3px 7px; text-align: center; font-size: 9px;
+        letter-spacing: .12em; border-bottom-color: rgba(47,48,44,.07);
+      }
       .date-year > summary {
-        position: static; display: block; padding: 10px 3px 5px;
-        text-align: center; font-size: 11px; background: transparent;
+        position: static; display: block; padding: 9px 2px 4px;
+        text-align: center; font-size: 10px; background: transparent;
       }
       .date-year > summary::after,
       .date-year-unit, .date-month-unit { display: none; }
       .date-month-jump {
-        display: block; margin: 2px 7px; padding: 0; text-align: center;
-        font-size: 12px; border: 1px solid rgba(47,48,44,.12); border-radius: 2px;
-      }
-      .date-month-jump {
-        padding: 6px 2px;
+        display: block; margin: 1px 4px; padding: 5px 1px; text-align: center;
+        font-size: 10px; border: 0; border-radius: 2px;
       }
       .date-entries { display: none; }
       .date-year:not([open]) .date-months { display: block; }
@@ -77553,9 +77557,11 @@ Fun night 上海·浦东嘉里中心"
     const navigationByPost = new Map(navigationItems.map((item) => [item.dataset.post, item]));
     let activeTimelineId = "";
     let activeTimelineItem = null;
+    let activeMonthJump = null;
     const setActiveTimeline = (id, scrollActive = false) => {
       if (activeTimelineId === id) return;
       activeTimelineItem?.classList.remove("active");
+      activeMonthJump?.classList.remove("active");
       const active = navigationByPost.get(id);
       activeTimelineId = id;
       activeTimelineItem = active || null;
@@ -77563,6 +77569,8 @@ Fun night 上海·浦东嘉里中心"
         active.classList.add("active");
         active.closest("details")?.setAttribute("open", "");
         active.closest(".date-year")?.setAttribute("open", "");
+        activeMonthJump = active.closest(".date-month")?.querySelector(".date-month-jump") || null;
+        activeMonthJump?.classList.add("active");
         if (scrollActive) active.scrollIntoView({ block: "nearest", inline: "nearest" });
       }
     };
