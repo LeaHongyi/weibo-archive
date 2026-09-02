@@ -200,6 +200,15 @@
       box-shadow: 0 24px 52px rgba(42,38,30,.14);
       filter: saturate(1.04);
     }
+    .collection-card.reveal-ready {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .72s ease, transform .72s ease, box-shadow .24s ease, filter .24s ease;
+    }
+    .collection-card.reveal-ready.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
     .collection-large {
       grid-column: span 2;
       grid-row: span 2;
@@ -217,6 +226,20 @@
     .archive-anchor { height: 0; scroll-margin-top: var(--nav-height); }
     .archive-filters { display: flex; align-items: center; gap: 22px; }
     .archive-actions { display: flex; align-items: center; gap: 20px; }
+    .archive-actions {
+      border: 1px solid rgba(184, 142, 110, .36);
+    }
+    .archive-actions .button {
+      min-width: 72px;
+      padding: 0 10px;
+      border-bottom: 0;
+    }
+    .archive-actions .button + .button {
+      border-left: 1px solid rgba(184, 142, 110, .26);
+    }
+    .archive-actions .button.active {
+      background: rgba(184, 142, 110, .12);
+    }
     .button {
       display: inline-flex; align-items: center; justify-content: center;
       min-height: 38px; padding: 0 2px; border: 0; border-bottom: 1px solid transparent;
@@ -531,11 +554,14 @@
       .start-button { min-height: 44px; margin-top: 22px; }
       .archive-toolbar {
         top: var(--nav-height); width: 100%; padding: 12px 10px;
+        display: grid; grid-template-columns: minmax(0, 1fr) auto;
         border-bottom: 1px solid var(--line);
       }
-      .archive-filters { gap: 16px; overflow-x: auto; scrollbar-width: none; }
+      .archive-filters { gap: 12px; overflow-x: auto; scrollbar-width: none; }
       .archive-filters::-webkit-scrollbar { display: none; }
-      .archive-actions { gap: 13px; }
+      .archive-actions { gap: 0; justify-self: end; }
+      .button { min-height: 34px; font-size: 11px; letter-spacing: .10em; white-space: nowrap; }
+      .archive-actions .button { min-width: 44px; padding: 0 6px; font-size: 10px; letter-spacing: .08em; }
       .collections { width: min(100% - 18px, 1180px); padding: 48px 0 34px; }
       .collections h2 { margin-bottom: 24px; font-size: 26px; }
       .collection-grid {
@@ -579,11 +605,18 @@
       .date-month-jump {
         padding: 6px 2px;
       }
-      .date-month-label::after { content: "月"; font-size: 9px; }
       .date-entries { display: none; }
       .date-year:not([open]) .date-months { display: block; }
       .posts { gap: 18px; }
-      .post { border-radius: 2px; scroll-margin-top: 112px; }
+      .post {
+        border-radius: 2px; scroll-margin-top: 112px;
+        content-visibility: auto;
+        contain-intrinsic-size: 680px;
+      }
+      .album-month {
+        content-visibility: auto;
+        contain-intrinsic-size: 520px;
+      }
       .post-header { padding: 11px 13px 4px; font-size: 12px; }
       .post-number { margin-right: 0; }
       .post-text { padding: 5px 14px 16px; font-size: 16px; line-height: 1.58; }
@@ -719,7 +752,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1" data-target="post-1">
-                    <span class="date-month-label">2</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Feb</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -738,7 +771,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-2" data-target="post-2">
-                    <span class="date-month-label">4</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Apr</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -751,7 +784,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-3" data-target="post-3">
-                    <span class="date-month-label">3</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Mar</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -764,7 +797,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-4" data-target="post-4">
-                    <span class="date-month-label">2</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Feb</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -782,7 +815,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-6" data-target="post-6">
-                    <span class="date-month-label">1</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jan</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -806,7 +839,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-8" data-target="post-8">
-                    <span class="date-month-label">12</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Dec</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -824,7 +857,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-10" data-target="post-10">
-                    <span class="date-month-label">11</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Nov</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -837,7 +870,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-11" data-target="post-11">
-                    <span class="date-month-label">10</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Oct</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -860,7 +893,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-14" data-target="post-14">
-                    <span class="date-month-label">9</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Sep</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -873,7 +906,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-15" data-target="post-15">
-                    <span class="date-month-label">6</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jun</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -886,7 +919,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-16" data-target="post-16">
-                    <span class="date-month-label">5</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">May</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -904,7 +937,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-18" data-target="post-18">
-                    <span class="date-month-label">3</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Mar</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -922,7 +955,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-20" data-target="post-20">
-                    <span class="date-month-label">2</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Feb</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -935,7 +968,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-21" data-target="post-21">
-                    <span class="date-month-label">1</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jan</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -954,7 +987,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-22" data-target="post-22">
-                    <span class="date-month-label">12</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Dec</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -972,7 +1005,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-24" data-target="post-24">
-                    <span class="date-month-label">11</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Nov</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -985,7 +1018,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-25" data-target="post-25">
-                    <span class="date-month-label">10</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Oct</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1003,7 +1036,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-27" data-target="post-27">
-                    <span class="date-month-label">9</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Sep</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1021,7 +1054,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-29" data-target="post-29">
-                    <span class="date-month-label">8</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Aug</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1054,7 +1087,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-34" data-target="post-34">
-                    <span class="date-month-label">7</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jul</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1067,7 +1100,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-35" data-target="post-35">
-                    <span class="date-month-label">6</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jun</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1095,7 +1128,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-39" data-target="post-39">
-                    <span class="date-month-label">5</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">May</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1118,7 +1151,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-42" data-target="post-42">
-                    <span class="date-month-label">4</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Apr</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1171,7 +1204,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-51" data-target="post-51">
-                    <span class="date-month-label">3</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Mar</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1239,7 +1272,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-63" data-target="post-63">
-                    <span class="date-month-label">2</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Feb</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1277,7 +1310,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-69" data-target="post-69">
-                    <span class="date-month-label">1</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jan</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1296,7 +1329,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-70" data-target="post-70">
-                    <span class="date-month-label">12</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Dec</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1319,7 +1352,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-73" data-target="post-73">
-                    <span class="date-month-label">11</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Nov</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1342,7 +1375,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-76" data-target="post-76">
-                    <span class="date-month-label">10</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Oct</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1370,7 +1403,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-80" data-target="post-80">
-                    <span class="date-month-label">9</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Sep</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1403,7 +1436,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-85" data-target="post-85">
-                    <span class="date-month-label">8</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Aug</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1421,7 +1454,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-87" data-target="post-87">
-                    <span class="date-month-label">6</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jun</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1444,7 +1477,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-90" data-target="post-90">
-                    <span class="date-month-label">5</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">May</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1482,7 +1515,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-96" data-target="post-96">
-                    <span class="date-month-label">4</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Apr</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1530,7 +1563,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-104" data-target="post-104">
-                    <span class="date-month-label">3</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Mar</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1548,7 +1581,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-106" data-target="post-106">
-                    <span class="date-month-label">2</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Feb</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1561,7 +1594,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-107" data-target="post-107">
-                    <span class="date-month-label">1</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jan</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1610,7 +1643,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-114" data-target="post-114">
-                    <span class="date-month-label">12</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Dec</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1638,7 +1671,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-118" data-target="post-118">
-                    <span class="date-month-label">11</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Nov</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1686,7 +1719,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-126" data-target="post-126">
-                    <span class="date-month-label">10</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Oct</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1774,7 +1807,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-142" data-target="post-142">
-                    <span class="date-month-label">9</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Sep</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1877,7 +1910,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-161" data-target="post-161">
-                    <span class="date-month-label">8</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Aug</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -1975,7 +2008,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-179" data-target="post-179">
-                    <span class="date-month-label">7</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jul</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2028,7 +2061,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-188" data-target="post-188">
-                    <span class="date-month-label">6</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jun</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2126,7 +2159,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-206" data-target="post-206">
-                    <span class="date-month-label">5</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">May</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2199,7 +2232,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-219" data-target="post-219">
-                    <span class="date-month-label">4</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Apr</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2292,7 +2325,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-236" data-target="post-236">
-                    <span class="date-month-label">3</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Mar</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2380,7 +2413,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-252" data-target="post-252">
-                    <span class="date-month-label">2</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Feb</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2498,7 +2531,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-274" data-target="post-274">
-                    <span class="date-month-label">1</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jan</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2602,7 +2635,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-292" data-target="post-292">
-                    <span class="date-month-label">12</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Dec</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2685,7 +2718,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-307" data-target="post-307">
-                    <span class="date-month-label">11</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Nov</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2818,7 +2851,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-332" data-target="post-332">
-                    <span class="date-month-label">10</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Oct</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2881,7 +2914,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-343" data-target="post-343">
-                    <span class="date-month-label">9</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Sep</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -2939,7 +2972,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-353" data-target="post-353">
-                    <span class="date-month-label">8</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Aug</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -3002,7 +3035,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-364" data-target="post-364">
-                    <span class="date-month-label">7</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jul</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -3060,7 +3093,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-374" data-target="post-374">
-                    <span class="date-month-label">6</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jun</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -3178,7 +3211,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-396" data-target="post-396">
-                    <span class="date-month-label">5</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">May</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -3361,7 +3394,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-431" data-target="post-431">
-                    <span class="date-month-label">4</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Apr</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -3629,7 +3662,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-483" data-target="post-483">
-                    <span class="date-month-label">3</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Mar</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -3772,7 +3805,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-510" data-target="post-510">
-                    <span class="date-month-label">2</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Feb</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -3955,7 +3988,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-545" data-target="post-545">
-                    <span class="date-month-label">1</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jan</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -4129,7 +4162,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-577" data-target="post-577">
-                    <span class="date-month-label">12</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Dec</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -4322,7 +4355,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-614" data-target="post-614">
-                    <span class="date-month-label">11</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Nov</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -4545,7 +4578,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-657" data-target="post-657">
-                    <span class="date-month-label">10</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Oct</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -4728,7 +4761,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-692" data-target="post-692">
-                    <span class="date-month-label">9</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Sep</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -4911,7 +4944,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-727" data-target="post-727">
-                    <span class="date-month-label">8</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Aug</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -5104,7 +5137,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-764" data-target="post-764">
-                    <span class="date-month-label">7</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jul</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -5317,7 +5350,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-805" data-target="post-805">
-                    <span class="date-month-label">6</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jun</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -5575,7 +5608,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-855" data-target="post-855">
-                    <span class="date-month-label">5</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">May</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -5818,7 +5851,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-902" data-target="post-902">
-                    <span class="date-month-label">4</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Apr</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -6021,7 +6054,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-941" data-target="post-941">
-                    <span class="date-month-label">3</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Mar</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -6229,7 +6262,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-981" data-target="post-981">
-                    <span class="date-month-label">2</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Feb</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -6422,7 +6455,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1018" data-target="post-1018">
-                    <span class="date-month-label">1</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jan</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -6781,7 +6814,7 @@
           
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1087" data-target="post-1087">
-                    <span class="date-month-label">12</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Dec</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -7024,7 +7057,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1134" data-target="post-1134">
-                    <span class="date-month-label">11</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Nov</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -7222,7 +7255,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1172" data-target="post-1172">
-                    <span class="date-month-label">10</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Oct</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -7430,7 +7463,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1212" data-target="post-1212">
-                    <span class="date-month-label">9</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Sep</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -7623,7 +7656,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1249" data-target="post-1249">
-                    <span class="date-month-label">8</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Aug</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -7666,7 +7699,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1256" data-target="post-1256">
-                    <span class="date-month-label">7</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jul</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -7759,7 +7792,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1273" data-target="post-1273">
-                    <span class="date-month-label">6</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Jun</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -7912,7 +7945,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1302" data-target="post-1302">
-                    <span class="date-month-label">5</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">May</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -8075,7 +8108,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1333" data-target="post-1333">
-                    <span class="date-month-label">4</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Apr</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -8308,7 +8341,7 @@
                 </div>
                 <div class="date-month">
                   <a class="date-month-jump" href="#post-1378" data-target="post-1378">
-                    <span class="date-month-label">3</span><span class="date-month-unit">月</span>
+                    <span class="date-month-label">Mar</span><span class="date-month-unit"></span>
                   </a>
                   <div class="date-entries">
                     
@@ -77019,7 +77052,7 @@ Fun night 上海·浦东嘉里中心"
   <section class="album-view" id="album-view" aria-label="相册视图" hidden>
     <div class="album-year" data-year="2022">
           <section class="album-month" data-year="2022" data-month="02">
-            <h3 class="album-divider"><span>2022</span><span>2月</span></h3>
+            <h3 class="album-divider"><span>2022</span><span>Feb</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77059,7 +77092,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section></div><div class="album-year" data-year="2020">
           <section class="album-month" data-year="2020" data-month="04">
-            <h3 class="album-divider"><span>2020</span><span>4月</span></h3>
+            <h3 class="album-divider"><span>2020</span><span>Apr</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -77087,7 +77120,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2020" data-month="03">
-            <h3 class="album-divider"><span>2020</span><span>3月</span></h3>
+            <h3 class="album-divider"><span>2020</span><span>Mar</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77103,7 +77136,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2020" data-month="02">
-            <h3 class="album-divider"><span>2020</span><span>2月</span></h3>
+            <h3 class="album-divider"><span>2020</span><span>Feb</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77144,7 +77177,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2020" data-month="01">
-            <h3 class="album-divider"><span>2020</span><span>1月</span></h3>
+            <h3 class="album-divider"><span>2020</span><span>Jan</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77198,7 +77231,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section></div><div class="album-year" data-year="2019">
           <section class="album-month" data-year="2019" data-month="12">
-            <h3 class="album-divider"><span>2019</span><span>12月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>Dec</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77300,7 +77333,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2019" data-month="11">
-            <h3 class="album-divider"><span>2019</span><span>11月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>Nov</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="mother">
                   <button class="album-open" type="button"
@@ -77316,7 +77349,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2019" data-month="10">
-            <h3 class="album-divider"><span>2019</span><span>10月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>Oct</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -77399,7 +77432,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2019" data-month="09">
-            <h3 class="album-divider"><span>2019</span><span>9月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>Sep</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77475,7 +77508,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2019" data-month="06">
-            <h3 class="album-divider"><span>2019</span><span>6月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>Jun</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -77492,7 +77525,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2019" data-month="05">
-            <h3 class="album-divider"><span>2019</span><span>5月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>May</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77604,7 +77637,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2019" data-month="03">
-            <h3 class="album-divider"><span>2019</span><span>3月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>Mar</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -77700,7 +77733,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2019" data-month="02">
-            <h3 class="album-divider"><span>2019</span><span>2月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>Feb</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77812,7 +77845,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2019" data-month="01">
-            <h3 class="album-divider"><span>2019</span><span>1月</span></h3>
+            <h3 class="album-divider"><span>2019</span><span>Jan</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother mother">
                   <button class="album-open" type="button"
@@ -77872,7 +77905,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section></div><div class="album-year" data-year="2018">
           <section class="album-month" data-year="2018" data-month="12">
-            <h3 class="album-divider"><span>2018</span><span>12月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Dec</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -77974,7 +78007,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="11">
-            <h3 class="album-divider"><span>2018</span><span>11月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Nov</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -77992,7 +78025,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="10">
-            <h3 class="album-divider"><span>2018</span><span>10月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Oct</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -78060,7 +78093,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="09">
-            <h3 class="album-divider"><span>2018</span><span>9月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Sep</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -78124,7 +78157,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="08">
-            <h3 class="album-divider"><span>2018</span><span>8月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Aug</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -78227,7 +78260,7 @@ Hero❤️ 北京"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="07">
-            <h3 class="album-divider"><span>2018</span><span>7月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Jul</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother younger father">
                   <button class="album-open" type="button"
@@ -78244,7 +78277,7 @@ Hero❤️ 北京"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="06">
-            <h3 class="album-divider"><span>2018</span><span>6月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Jun</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -78398,7 +78431,7 @@ Hero❤️ 北京"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="05">
-            <h3 class="album-divider"><span>2018</span><span>5月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>May</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -78498,7 +78531,7 @@ Hero❤️ 北京"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="04">
-            <h3 class="album-divider"><span>2018</span><span>4月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Apr</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -78971,7 +79004,7 @@ Hero❤️ 北京"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="03">
-            <h3 class="album-divider"><span>2018</span><span>3月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Mar</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -79280,7 +79313,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="02">
-            <h3 class="album-divider"><span>2018</span><span>2月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Feb</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -79461,7 +79494,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2018" data-month="01">
-            <h3 class="album-divider"><span>2018</span><span>1月</span></h3>
+            <h3 class="album-divider"><span>2018</span><span>Jan</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -79491,7 +79524,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section></div><div class="album-year" data-year="2017">
           <section class="album-month" data-year="2017" data-month="12">
-            <h3 class="album-divider"><span>2017</span><span>12月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Dec</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother younger">
                   <button class="album-open" type="button"
@@ -79583,7 +79616,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="11">
-            <h3 class="album-divider"><span>2017</span><span>11月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Nov</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -79701,7 +79734,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="10">
-            <h3 class="album-divider"><span>2017</span><span>10月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Oct</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="mother">
                   <button class="album-open" type="button"
@@ -79753,7 +79786,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="09">
-            <h3 class="album-divider"><span>2017</span><span>9月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Sep</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -79817,7 +79850,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="08">
-            <h3 class="album-divider"><span>2017</span><span>8月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Aug</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -79847,7 +79880,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="06">
-            <h3 class="album-divider"><span>2017</span><span>6月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Jun</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -79995,7 +80028,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="05">
-            <h3 class="album-divider"><span>2017</span><span>5月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>May</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother younger">
                   <button class="album-open" type="button"
@@ -80143,7 +80176,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="04">
-            <h3 class="album-divider"><span>2017</span><span>4月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Apr</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -80483,7 +80516,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="03">
-            <h3 class="album-divider"><span>2017</span><span>3月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Mar</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -80535,7 +80568,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="02">
-            <h3 class="album-divider"><span>2017</span><span>2月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Feb</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -80587,7 +80620,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2017" data-month="01">
-            <h3 class="album-divider"><span>2017</span><span>1月</span></h3>
+            <h3 class="album-divider"><span>2017</span><span>Jan</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -80813,7 +80846,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section></div><div class="album-year" data-year="2016">
           <section class="album-month" data-year="2016" data-month="12">
-            <h3 class="album-divider"><span>2016</span><span>12月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Dec</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -80937,7 +80970,7 @@ Ps：图为3.8节哥哥给妈咪做的花束💐"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="11">
-            <h3 class="album-divider"><span>2016</span><span>11月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Nov</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -81149,7 +81182,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="10">
-            <h3 class="album-divider"><span>2016</span><span>10月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Oct</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="mother">
                   <button class="album-open" type="button"
@@ -81753,7 +81786,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="09">
-            <h3 class="album-divider"><span>2016</span><span>9月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Sep</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -82273,7 +82306,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="08">
-            <h3 class="album-divider"><span>2016</span><span>8月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Aug</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -82673,7 +82706,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="07">
-            <h3 class="album-divider"><span>2016</span><span>7月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Jul</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="mother">
                   <button class="album-open" type="button"
@@ -82869,7 +82902,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="06">
-            <h3 class="album-divider"><span>2016</span><span>6月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Jun</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -83209,7 +83242,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="05">
-            <h3 class="album-divider"><span>2016</span><span>5月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>May</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -83693,7 +83726,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="04">
-            <h3 class="album-divider"><span>2016</span><span>4月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Apr</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -84093,7 +84126,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="03">
-            <h3 class="album-divider"><span>2016</span><span>3月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Mar</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -84397,7 +84430,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="02">
-            <h3 class="album-divider"><span>2016</span><span>2月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Feb</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -84701,7 +84734,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2016" data-month="01">
-            <h3 class="album-divider"><span>2016</span><span>1月</span></h3>
+            <h3 class="album-divider"><span>2016</span><span>Jan</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -85041,7 +85074,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section></div><div class="album-year" data-year="2015">
           <section class="album-month" data-year="2015" data-month="12">
-            <h3 class="album-divider"><span>2015</span><span>12月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Dec</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="brother">
                   <button class="album-open" type="button"
@@ -85429,7 +85462,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="11">
-            <h3 class="album-divider"><span>2015</span><span>11月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Nov</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -85889,7 +85922,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="10">
-            <h3 class="album-divider"><span>2015</span><span>10月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Oct</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="younger">
                   <button class="album-open" type="button"
@@ -86157,7 +86190,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="09">
-            <h3 class="album-divider"><span>2015</span><span>9月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Sep</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -86437,7 +86470,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="08">
-            <h3 class="album-divider"><span>2015</span><span>8月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Aug</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -86717,7 +86750,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="07">
-            <h3 class="album-divider"><span>2015</span><span>7月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Jul</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -86985,7 +87018,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="06">
-            <h3 class="album-divider"><span>2015</span><span>6月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Jun</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -87757,7 +87790,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="05">
-            <h3 class="album-divider"><span>2015</span><span>5月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>May</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -88565,7 +88598,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="04">
-            <h3 class="album-divider"><span>2015</span><span>4月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Apr</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -89481,7 +89514,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="03">
-            <h3 class="album-divider"><span>2015</span><span>3月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Mar</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -90205,7 +90238,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="02">
-            <h3 class="album-divider"><span>2015</span><span>2月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Feb</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -90749,7 +90782,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2015" data-month="01">
-            <h3 class="album-divider"><span>2015</span><span>1月</span></h3>
+            <h3 class="album-divider"><span>2015</span><span>Jan</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -91341,7 +91374,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section></div><div class="album-year" data-year="2014">
           <section class="album-month" data-year="2014" data-month="12">
-            <h3 class="album-divider"><span>2014</span><span>12月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Dec</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -92401,7 +92434,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="11">
-            <h3 class="album-divider"><span>2014</span><span>11月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Nov</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -93797,7 +93830,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="10">
-            <h3 class="album-divider"><span>2014</span><span>10月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Oct</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -94965,7 +94998,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="09">
-            <h3 class="album-divider"><span>2014</span><span>9月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Sep</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -96349,7 +96382,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="08">
-            <h3 class="album-divider"><span>2014</span><span>8月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Aug</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -97493,7 +97526,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="07">
-            <h3 class="album-divider"><span>2014</span><span>7月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Jul</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -98469,7 +98502,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="06">
-            <h3 class="album-divider"><span>2014</span><span>6月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Jun</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -99841,7 +99874,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="05">
-            <h3 class="album-divider"><span>2014</span><span>5月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>May</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -101285,7 +101318,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="04">
-            <h3 class="album-divider"><span>2014</span><span>4月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Apr</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -102633,7 +102666,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="03">
-            <h3 class="album-divider"><span>2014</span><span>3月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Mar</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -103873,7 +103906,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="02">
-            <h3 class="album-divider"><span>2014</span><span>2月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Feb</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -104645,7 +104678,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2014" data-month="01">
-            <h3 class="album-divider"><span>2014</span><span>1月</span></h3>
+            <h3 class="album-divider"><span>2014</span><span>Jan</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -106005,7 +106038,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section></div><div class="album-year" data-year="2013">
           <section class="album-month" data-year="2013" data-month="12">
-            <h3 class="album-divider"><span>2013</span><span>12月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Dec</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -106837,7 +106870,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="11">
-            <h3 class="album-divider"><span>2013</span><span>11月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Nov</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -107585,7 +107618,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="10">
-            <h3 class="album-divider"><span>2013</span><span>10月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Oct</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -108153,7 +108186,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="09">
-            <h3 class="album-divider"><span>2013</span><span>9月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Sep</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -108673,7 +108706,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="08">
-            <h3 class="album-divider"><span>2013</span><span>8月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Aug</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -108761,7 +108794,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="07">
-            <h3 class="album-divider"><span>2013</span><span>7月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Jul</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -108921,7 +108954,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="06">
-            <h3 class="album-divider"><span>2013</span><span>6月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Jun</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -109177,7 +109210,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="05">
-            <h3 class="album-divider"><span>2013</span><span>5月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>May</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -109361,7 +109394,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="04">
-            <h3 class="album-divider"><span>2013</span><span>4月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Apr</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -109509,7 +109542,7 @@ Fun night 上海·浦东嘉里中心"
                 </figure></div>
           </section>
           <section class="album-month" data-year="2013" data-month="03">
-            <h3 class="album-divider"><span>2013</span><span>3月</span></h3>
+            <h3 class="album-divider"><span>2013</span><span>Mar</span></h3>
             <div class="album-grid">
                 <figure class="album-item" data-categories="">
                   <button class="album-open" type="button"
@@ -109718,6 +109751,14 @@ Fun night 上海·浦东嘉里中心"
       const archiveTop = Math.max(0, snapArchive.offsetTop - headerHeight);
       const nearCollections = Math.abs(y - collectionsTop) < 96;
       const nearArchive = Math.abs(y - archiveTop) < 96;
+      const isNarrow = window.matchMedia("(max-width: 820px)").matches;
+      if (isNarrow) {
+        if (deltaY > 0 && y >= collectionsTop - 16 && y < archiveTop - 24) {
+          snapToElement(snapArchive, "#archive-content");
+          return true;
+        }
+        return false;
+      }
       if (deltaY > 0) {
         if (y < collectionsTop - 24) {
           snapToElement(snapCollections, "#collections");
@@ -109756,6 +109797,8 @@ Fun night 上海·浦东嘉里中心"
       }
     }, { passive: false });
     document.querySelectorAll(".collection-card").forEach((card, cardIndex) => {
+      card.classList.add("reveal-ready");
+      card.style.transitionDelay = `${Math.min(cardIndex * 90, 270)}ms`;
       let images = [];
       try {
         images = JSON.parse(card.dataset.images || "[]");
@@ -109766,6 +109809,18 @@ Fun night 上海·浦东嘉里中心"
         setupCrossfade(card, ".collection-bg", images, 3600 + cardIndex * 520);
       }
     });
+    if ("IntersectionObserver" in window) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("revealed");
+          revealObserver.unobserve(entry.target);
+        });
+      }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+      document.querySelectorAll(".collection-card").forEach((card) => revealObserver.observe(card));
+    } else {
+      document.querySelectorAll(".collection-card").forEach((card) => card.classList.add("revealed"));
+    }
     const galleries = [...document.querySelectorAll(".post")].map((post) =>
       [...post.querySelectorAll(".photo-open")]
     );
@@ -109791,8 +109846,11 @@ Fun night 上海·浦东嘉里中心"
     let photoLoadTicking = false;
     const loadVisiblePhotos = () => {
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const preload = 420;
+      const preload = window.matchMedia("(max-width: 820px)").matches ? 1100 : 620;
+      let loadedThisFrame = 0;
+      const loadLimit = window.matchMedia("(max-width: 820px)").matches ? 18 : 32;
       pendingButtons.forEach((button) => {
+        if (loadedThisFrame >= loadLimit) return;
         if (button.closest("[hidden]")) return;
         if (button.closest(".post")?.hidden) return;
         if (button.closest(".album-item")?.hidden) return;
@@ -109802,8 +109860,10 @@ Fun night 上海·浦东嘉里中心"
         if (rect.width === 0 || rect.height === 0) return;
         if (rect.bottom >= -preload && rect.top <= viewportHeight + preload) {
           loadPhoto(button);
+          loadedThisFrame += 1;
         }
       });
+      if (pendingButtons.size && loadedThisFrame >= loadLimit) requestVisiblePhotoLoad();
     };
     const requestVisiblePhotoLoad = () => {
       if (photoLoadTicking) return;
@@ -109884,12 +109944,17 @@ Fun night 上海·浦东嘉里中心"
     if ("IntersectionObserver" in window) {
       usesIntersectionObserver = true;
       const photoObserver = new IntersectionObserver((entries) => {
+        const loadLimit = window.matchMedia("(max-width: 820px)").matches ? 18 : 32;
+        let loaded = 0;
         entries.forEach((entry) => {
+          if (loaded >= loadLimit) return;
           if (!entry.isIntersecting) return;
           loadPhoto(entry.target);
           photoObserver.unobserve(entry.target);
+          loaded += 1;
         });
-      }, { rootMargin: "420px 0px" });
+        if (loaded >= loadLimit) requestVisiblePhotoLoad();
+      }, { rootMargin: (window.matchMedia("(max-width: 820px)").matches ? "1100px 0px" : "620px 0px") });
       lazyButtons.forEach((button) => photoObserver.observe(button));
     } else {
       lazyButtons.slice(0, 80).forEach(loadPhoto);
