@@ -229,11 +229,12 @@
     .archive-actions { display: flex; align-items: center; gap: 20px; }
     .archive-actions {
       border: 1px solid rgba(184, 142, 110, .36);
+      overflow: hidden;
     }
     .archive-actions .button {
       min-width: 72px;
       padding: 0 10px;
-      border-bottom: 0;
+      border: 0;
     }
     .archive-actions .button + .button {
       border-left: 1px solid rgba(184, 142, 110, .26);
@@ -250,7 +251,7 @@
       color: var(--accent); border-color: var(--accent);
     }
     .view-action { color: rgba(90, 64, 54, .56); }
-    .view-action.active { color: #5a4036; border-color: transparent; }
+    .view-action.active { color: #5a4036; }
     .layout {
       display: grid; grid-template-columns: 250px minmax(0, 1fr);
       gap: 28px; align-items: start; padding: 10px 0 80px;
