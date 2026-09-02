@@ -314,7 +314,13 @@
       border: 1px solid rgba(47,48,44,.08); border-radius: 2px;
       background: var(--panel); box-shadow: var(--shadow);
       backdrop-filter: var(--glass); -webkit-backdrop-filter: var(--glass);
-      scrollbar-width: thin; scrollbar-color: var(--green) transparent;
+      scrollbar-width: thin; scrollbar-color: rgba(156, 175, 136, .36) transparent;
+    }
+    .timeline::-webkit-scrollbar { width: 4px; }
+    .timeline::-webkit-scrollbar-track { background: transparent; }
+    .timeline::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: rgba(156, 175, 136, .34);
     }
     .timeline-title {
       position: sticky; top: 0; z-index: 4; padding: 14px 16px 10px;
@@ -604,7 +610,10 @@
         top: calc(var(--nav-height) + 64px);
         max-height: calc(100vh - var(--nav-height) - 76px); border-radius: 2px;
         overflow-x: hidden;
+        scrollbar-width: thin;
       }
+      .timeline::-webkit-scrollbar { width: 2px; }
+      .timeline::-webkit-scrollbar-thumb { background: rgba(156, 175, 136, .28); }
       .timeline-title {
         padding: 9px 3px 7px; text-align: center; font-size: 9px;
         letter-spacing: .12em; border-bottom-color: rgba(47,48,44,.07);
@@ -77555,9 +77564,27 @@ Fun night 上海·浦东嘉里中心"
     const dateEntries = [...document.querySelectorAll(".date-entry")];
     const navigationItems = [...dateEntries];
     const navigationByPost = new Map(navigationItems.map((item) => [item.dataset.post, item]));
+    const timelineNav = document.querySelector(".timeline");
     let activeTimelineId = "";
     let activeTimelineItem = null;
     let activeMonthJump = null;
+    let timelineFollowTicking = false;
+    const followActiveTimeline = (target) => {
+      if (!timelineNav || !target || timelineFollowTicking) return;
+      timelineFollowTicking = true;
+      requestAnimationFrame(() => {
+        timelineFollowTicking = false;
+        const targetRect = target.getBoundingClientRect();
+        const navRect = timelineNav.getBoundingClientRect();
+        const desiredTop = navRect.top + navRect.height * .34;
+        const delta = targetRect.top - desiredTop;
+        if (Math.abs(delta) < 28) return;
+        timelineNav.scrollBy({
+          top: delta,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        });
+      });
+    };
     const setActiveTimeline = (id, scrollActive = false) => {
       if (activeTimelineId === id) return;
       activeTimelineItem?.classList.remove("active");
@@ -77571,6 +77598,7 @@ Fun night 上海·浦东嘉里中心"
         active.closest(".date-year")?.setAttribute("open", "");
         activeMonthJump = active.closest(".date-month")?.querySelector(".date-month-jump") || null;
         activeMonthJump?.classList.add("active");
+        followActiveTimeline(activeMonthJump || active);
         if (scrollActive) active.scrollIntoView({ block: "nearest", inline: "nearest" });
       }
     };
