@@ -787,61 +787,24 @@
         z-index: 32;
         left: 7px;
         top: calc(var(--nav-height) + 64px);
-        width: 104px;
+        width: 74px;
         max-height: calc(100vh - var(--nav-height) - 76px); border-radius: 2px;
         overflow-x: hidden;
         scrollbar-width: thin;
-        opacity: .58;
+        opacity: 0;
         transform: translateX(calc(-100% - 10px));
-        transition: transform .26s ease, opacity .26s ease, box-shadow .26s ease;
+        pointer-events: none;
+        transition: transform .24s ease, opacity .24s ease, box-shadow .24s ease;
         will-change: transform, opacity;
-        box-shadow: 0 18px 46px rgba(52,42,35,.08);
+        box-shadow: 0 18px 46px rgba(52,42,35,.06);
       }
       body.timeline-peek .timeline {
-        opacity: .72;
-        transform: translateX(calc(-100% + 19px));
-      }
-      body.timeline-open .timeline {
-        opacity: .94;
+        opacity: .86;
         transform: translateX(0);
+        pointer-events: auto;
         box-shadow: 0 22px 60px rgba(52,42,35,.16);
       }
-      .timeline-toggle {
-        position: fixed;
-        z-index: 35;
-        left: 6px;
-        top: calc(var(--nav-height) + 78px);
-        display: inline-grid;
-        place-items: center;
-        width: 28px;
-        height: 46px;
-        border: 1px solid rgba(184,142,110,.24);
-        border-radius: 0 2px 2px 0;
-        color: rgba(90,64,54,.76);
-        background: rgba(251,250,247,.58);
-        box-shadow: 0 12px 32px rgba(52,42,35,.08);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        transition: left .26s ease, opacity .26s ease, background .26s ease;
-      }
-      .timeline-toggle svg {
-        width: 15px;
-        height: 15px;
-        stroke: currentColor;
-        stroke-width: 2;
-        fill: none;
-        transition: transform .26s ease;
-      }
-      body.timeline-open .timeline-toggle {
-        left: 111px;
-        opacity: .9;
-        background: rgba(251,250,247,.82);
-      }
-      body.timeline-open .timeline-toggle svg { transform: rotate(180deg); }
-      body.timeline-peek:not(.timeline-open) .timeline-toggle {
-        opacity: .82;
-        background: rgba(251,250,247,.74);
-      }
+      .timeline-toggle { display: none; }
       .timeline::-webkit-scrollbar { width: 2px; }
       .timeline::-webkit-scrollbar-thumb { background: rgba(156, 175, 136, .28); }
       .timeline-title {
@@ -8680,11 +8643,6 @@
       </details></div>
       </div>
     </nav>
-    <button class="timeline-toggle" type="button" aria-label="展开时间轴" aria-expanded="false">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M9 5l7 7-7 7"></path>
-      </svg>
-    </button>
     <section class="posts" aria-label="微博内容" aria-live="polite">
       
     </section>
@@ -9305,7 +9263,6 @@
     const navigationItems = [...dateEntries];
     const navigationByPost = new Map(navigationItems.map((item) => [item.dataset.post, item]));
     const timelineNav = document.querySelector(".timeline");
-    const timelineToggle = document.querySelector(".timeline-toggle");
     let activeTimelineId = "";
     let activeTimelineItem = null;
     let activeMonthJump = null;
@@ -9314,14 +9271,19 @@
     let lastTimelinePeekY = window.scrollY || 0;
     let lastTimelinePeekAt = performance.now();
     const closeMobileTimeline = () => {
-      document.body.classList.remove("timeline-open");
-      timelineToggle?.setAttribute("aria-expanded", "false");
-      timelineToggle?.setAttribute("aria-label", "展开时间轴");
+      document.body.classList.remove("timeline-peek");
     };
     const showTimelinePeek = () => {
-      if (!isNarrowScreen() || document.body.classList.contains("timeline-open")) return;
+      if (!isNarrowScreen() || archiveView !== "posts") return;
       const now = performance.now();
       const y = window.scrollY || 0;
+      const archiveTop = Math.max(0, (document.querySelector("#archive-content")?.offsetTop || 0) - getHeaderHeight() - 8);
+      if (y < archiveTop) {
+        closeMobileTimeline();
+        lastTimelinePeekY = y;
+        lastTimelinePeekAt = now;
+        return;
+      }
       const speed = Math.abs(y - lastTimelinePeekY) / Math.max(16, now - lastTimelinePeekAt);
       lastTimelinePeekY = y;
       lastTimelinePeekAt = now;
@@ -9330,15 +9292,8 @@
       window.clearTimeout(timelinePeekTimer);
       timelinePeekTimer = window.setTimeout(() => {
         document.body.classList.remove("timeline-peek");
-      }, 950);
+      }, 820);
     };
-    timelineToggle?.addEventListener("click", () => {
-      const opening = !document.body.classList.contains("timeline-open");
-      document.body.classList.toggle("timeline-open", opening);
-      document.body.classList.remove("timeline-peek");
-      timelineToggle.setAttribute("aria-expanded", String(opening));
-      timelineToggle.setAttribute("aria-label", opening ? "收起时间轴" : "展开时间轴");
-    });
     const followActiveTimeline = (target) => {
       if (!timelineNav || !target || timelineFollowTicking) return;
       timelineFollowTicking = true;
