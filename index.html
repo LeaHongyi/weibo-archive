@@ -9255,7 +9255,7 @@
         event.stopPropagation();
         button.closest(".date-month")?.setAttribute("open", "");
         button.closest(".date-year")?.setAttribute("open", "");
-        closeMobileTimeline();
+        closeMobileTimeline(true);
         jumpToPost(button.dataset.target).catch((error) => console.warn(error.message));
       });
     });
@@ -9268,10 +9268,27 @@
     let activeMonthJump = null;
     let timelineFollowTicking = false;
     let timelinePeekTimer = 0;
+    let timelineInteracting = false;
     let lastTimelinePeekY = window.scrollY || 0;
     let lastTimelinePeekAt = performance.now();
-    const closeMobileTimeline = () => {
+    const closeMobileTimeline = (force = false) => {
+      if (force) timelineInteracting = false;
+      if (timelineInteracting) return;
       document.body.classList.remove("timeline-peek");
+    };
+    const scheduleTimelineClose = (delay = 900) => {
+      window.clearTimeout(timelinePeekTimer);
+      timelinePeekTimer = window.setTimeout(closeMobileTimeline, delay);
+    };
+    const keepTimelineOpen = () => {
+      if (!isNarrowScreen() || archiveView !== "posts") return;
+      timelineInteracting = true;
+      document.body.classList.add("timeline-peek");
+      window.clearTimeout(timelinePeekTimer);
+    };
+    const releaseTimelineOpen = (delay = 1100) => {
+      timelineInteracting = false;
+      scheduleTimelineClose(delay);
     };
     const showTimelinePeek = () => {
       if (!isNarrowScreen() || archiveView !== "posts") return;
@@ -9279,7 +9296,7 @@
       const y = window.scrollY || 0;
       const archiveTop = Math.max(0, (document.querySelector("#archive-content")?.offsetTop || 0) - getHeaderHeight() - 8);
       if (y < archiveTop) {
-        closeMobileTimeline();
+        closeMobileTimeline(true);
         lastTimelinePeekY = y;
         lastTimelinePeekAt = now;
         return;
@@ -9289,11 +9306,21 @@
       lastTimelinePeekAt = now;
       if (speed < .45) return;
       document.body.classList.add("timeline-peek");
+      if (!timelineInteracting) scheduleTimelineClose(900);
+    };
+    timelineNav?.addEventListener("pointerenter", keepTimelineOpen);
+    timelineNav?.addEventListener("pointerleave", () => releaseTimelineOpen(1200));
+    timelineNav?.addEventListener("touchstart", keepTimelineOpen, { passive: true });
+    timelineNav?.addEventListener("touchend", () => releaseTimelineOpen(1400), { passive: true });
+    timelineNav?.addEventListener("touchcancel", () => releaseTimelineOpen(900), { passive: true });
+    timelineNav?.addEventListener("scroll", () => {
+      keepTimelineOpen();
       window.clearTimeout(timelinePeekTimer);
       timelinePeekTimer = window.setTimeout(() => {
-        document.body.classList.remove("timeline-peek");
-      }, 820);
-    };
+        timelineInteracting = false;
+        closeMobileTimeline();
+      }, 1400);
+    }, { passive: true });
     const followActiveTimeline = (target) => {
       if (!timelineNav || !target || timelineFollowTicking) return;
       timelineFollowTicking = true;
